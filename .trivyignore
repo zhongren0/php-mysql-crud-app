@@ -1,0 +1,4 @@
+# Acknowledged critical vulnerability in the zlib1g base package.
+# The Debian package maintainer has marked it as "will_not_fix" for this version.
+# Accepting the risk for this project.
+CVE-2023-45853
