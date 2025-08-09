@@ -43,11 +43,11 @@ pipeline {
             echo "--- END DEBUG ---"
 
             sh """
-                docker run --rm \\
-                    -v /var/run/docker.sock:/var/run/docker.sock \\
-                    -v ${WORKSPACE}:/work \\
-                    aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /work/.trivyignore ${imageName}
-            """
+        docker run --rm \\
+        -v /var/run/docker.sock:/var/run/docker.sock \\
+        -v ${WORKSPACE}/.trivyignore:/tmp/.trivyignore \\
+        aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /tmp/.trivyignore ${imageName}
+        """
                 }
             }
         }
