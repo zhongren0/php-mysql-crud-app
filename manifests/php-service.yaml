@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-service
+  namespace: php-mysql
+  labels:
+    app: php
+spec:
+  selector:
+    app: php
+  ports:
+  - name: http-web
+    port: 80
+    targetPort: 80
+  type: ClusterIP
