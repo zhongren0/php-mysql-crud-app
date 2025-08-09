@@ -34,7 +34,7 @@ pipeline {
         stage('3. Security Scan with Trivy') {
     steps {
         script {
-            def imageName = "${DOCKОER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+            def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
             echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
 
             // DEBUG: List the contents of the workspace to ensure .trivyignore is present
