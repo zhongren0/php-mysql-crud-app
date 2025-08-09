@@ -32,13 +32,22 @@ pipeline {
         }
 
         stage('3. Security Scan with Trivy') {
-            steps {
-                script {
-                    def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
-                    // Run the Trivy scanner in a container. 
-                    // It will fail the build if high or critical vulnerabilities are found.
-                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/root/workspace aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /root/workspace/.trivyignore ${imageName}"     
+    steps {
+        script {
+            def imageName = "${DOCKОER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+            echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
+
+            // DEBUG: List the contents of the workspace to ensure .trivyignore is present
+            echo "--- DEBUG: Listing workspace contents ---"
+            sh "ls -la"
+            echo "--- END DEBUG ---"
+
+            sh """
+                docker run --rm \\
+                    -v /var/run/docker.sock:/var/run/docker.sock \\
+                    -v ${WORKSPACE}:/work \\
+                    aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /work/.trivyignore ${imageName}
+            """
                 }
             }
         }
