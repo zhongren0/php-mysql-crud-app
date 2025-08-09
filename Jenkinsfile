@@ -66,7 +66,7 @@ pipeline {
                     def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
                     echo "Deploying new image to Kubernetes..."
                     // Use the Jenkins credential with the ID 'kubeconfig-file'
-                    withKubeconfig([credentialsId: 'kubeconfig-file']) {
+                    withKubeConfig([credentialsId: 'kubeconfig-file']) {
                         // Perform a rolling update of the deployment with the new image
                         sh "kubectl set image deployment/${K8S_DEPLOYMENT} php=${imageName} -n ${K8S_NAMESPACE}"
                         
