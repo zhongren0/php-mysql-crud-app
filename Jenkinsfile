@@ -38,7 +38,7 @@ pipeline {
                     echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
                     // Run the Trivy scanner in a container. 
                     // It will fail the build if high or critical vulnerabilities are found.
-                    sh "docker run --rm aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${imageName}"
+                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${imageName}"
                 }
             }
         }
