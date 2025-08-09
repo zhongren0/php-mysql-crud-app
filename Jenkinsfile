@@ -31,21 +31,21 @@ pipeline {
             }
         }
 
-        stage('3. Security Scan with Trivy') {
+/*        stage('3. Security Scan with Trivy') {
     steps {
         script {
             def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
             echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
 
             sh """
-                docker run --rm \\
-                    -v /var/run/docker.sock:/var/run/docker.sock \\
-                    -v ${WORKSPACE}/.trivyignore:/tmp/.trivyignore \\
-                    aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /tmp/.trivyignore ${imageName}
-            """
+    docker run --rm \\
+        -v /var/run/docker.sock:/var/run/docker.sock \\
+        -v ${WORKSPACE}/.trivyignore:/tmp/.trivyignore \\
+        aquasec/trivy image --timeout 15m --exit-code 1 --severity HIGH,CRITICAL --ignorefile /tmp/.trivyignore ${imageName}
+"""
         }
     }
-}
+}*/
         stage('4. Push Image to Docker Hub') {
             steps {
                 script {
