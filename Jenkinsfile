@@ -37,21 +37,13 @@ pipeline {
             def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
             echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
 
-            // DEBUG: List the contents of the workspace to ensure .trivyignore is present
-            echo "--- DEBUG: Listing workspace contents ---"
-            sh "ls -la"
-            echo "--- END DEBUG ---"
-
             sh """
-        docker run --rm \\
-        -v /var/run/docker.sock:/var/run/docker.sock \\
-        -v ${WORKSPACE}/.trivyignore:/tmp/.trivyignore \\
-        aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignorefile /tmp/.trivyignore ${imageName}
-        """
-                }
-            }
+                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --format json ${imageName} | \\
+                docker run --rm -i -v ${WORKSPACE}:/work aquasec/trivy json --exit-code 1 --severity HIGH,CRITICAL --ignorefile /work/.trivyignore
+            """
         }
-
+    }
+}
         stage('4. Push Image to Docker Hub') {
             steps {
                 script {
