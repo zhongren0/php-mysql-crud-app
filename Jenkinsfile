@@ -24,28 +24,30 @@ pipeline {
                 script {
                     // We tag the image with the unique Jenkins build number for versioning
                     def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
-          stage('3. Security Scan with Trivy') {
-    steps {
-        script {
-            def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
-            echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
-
-            // This is the standard, clean command to run the scan.
-            // It mounts the Docker socket so Trivy can see the image,
-            // and it will fail the build if any high or critical issues are found.
-            sh """
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${imageName}
-            """
-        }
-    }
-}          echo "Building Docker image: ${imageName}"
+                    echo "Building Docker image: ${imageName}"
                     // Build from the 'php' subdirectory where the Dockerfile is located
                     sh "docker build -t ${imageName} ./php"
                 }
             }
-         }
-          
-          stage('4. Push Image to Docker Hub') {
+        }
+
+        stage('3. Security Scan with Trivy') {
+            steps {
+                script {
+                    def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
+
+                    // This is the standard, clean command to run the scan.
+                    // It mounts the Docker socket so Trivy can see the image,
+                    // and it will fail the build if any high or critical issues are found.
+                    sh """
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL ${imageName}
+                    """
+                }
+            }
+        }
+
+        stage('4. Push Image to Docker Hub') {
             steps {
                 script {
                     def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
