@@ -1,4 +1,5 @@
-FROM php:8.2-apache-alpine
+# Use the verified, correct PHP 8.2 Apache image based on Alpine 3.19
+FROM php:8.2-apache-alpine3.19
 
 # Alpine Linux uses 'apk' for its package manager.
 # We need to install the development headers for the MariaDB/MySQL connector
