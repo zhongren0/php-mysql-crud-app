@@ -36,11 +36,11 @@ pipeline {
                 script {
                     def imageName = "${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
                     echo "Scanning ${imageName} for HIGH and CRITICAL vulnerabilities..."
-
-                    // This command directly ignores the specific CVE, avoiding all file system issues.
                     sh """
-                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
-                        aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed --ignore-vuln CVE-2023-45853 ${imageName}
+                        docker run --rm \
+                            -v /var/run/docker.sock:/var/run/docker.sock \
+                            aquasec/trivy image --timeout 15m --exit-code 1 \
+                            --severity HIGH,CRITICAL --ignore-unfixed ${imageName}
                     """
                 }
             }
@@ -77,11 +77,11 @@ pipeline {
             }
         }
     }
+
     post {
         always {
-            // This block runs after the pipeline finishes, regardless of status
             echo 'Cleaning up...'
-            sh 'docker logout'
+            sh "docker logout"
         }
     }
 }
