@@ -1,8 +1,8 @@
-# Use PHP 8.2 with Apache server as the base image
-FROM php:8.2-apache-alpine
-# Install mysqli extension
-RUN docker-php-ext-install mysqli
+FROM php:8.2-apache-alpine3.18
 
-# Copy PHP app into Apache document root
+# Install build dependencies, then the PHP extension, then clean up
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS mariadb-connector-c-dev && \
+    docker-php-ext-install mysqli && \
+    apk del .build-deps
+
 COPY . /var/www/html/
-
